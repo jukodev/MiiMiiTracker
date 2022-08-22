@@ -9,7 +9,10 @@ async function createW2GRoom(uri) {
 			bg_color: "#2a354c",
 			bg_opacity: "85",
 		})
-		.catch(e => console.log(e));
+		.catch(e => {
+			console.log(e.response.data.error);
+			return;
+		});
 	return Promise.resolve("https://w2g.tv/rooms/" + data.streamkey);
 }
 

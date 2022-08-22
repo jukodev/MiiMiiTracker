@@ -1,11 +1,7 @@
-const api = require("./src/api");
-const db = require("./src/helpers");
+import fetch from "node-fetch";
 
-api.getLatestVideo().then(res => {
-	console.log(res);
-});
-api.createW2GRoom("asdasdasd").then(res => {
-	console.log(res);
-});
-
-db.writeDB({ oksace: "asd" });
+fetch("https://www.youtube.com/c/miimii/videos?view=0&sort=dd&flow=grid")
+	.then(res => res.text())
+	.then(html => {
+		console.log(html);
+	});
