@@ -12,11 +12,8 @@ client.on("ready", () => {
 		channel = ch;
 	});
 });
-api.getLatestVideo().then(res => {
-	console.log(res.result.data);
-});
 
-/*setInterval(async () => {
+setInterval(async () => {
 	let lastId = db.readDB().lastVideo;
 	api.getLatestVideo().then(res => {
 		console.log(res);
@@ -25,6 +22,6 @@ api.getLatestVideo().then(res => {
 			db.writeDB({ lastVideo: res.id.videoId });
 		}
 	});
-}, 10000);*/
+}, 10000);
 
 client.login(process.env.DISCORD_KEY);

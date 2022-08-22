@@ -10,8 +10,7 @@ async function createW2GRoom(uri) {
 			bg_opacity: "85",
 		})
 		.catch(e => {
-			console.log(e.response.data.error);
-			return;
+			console.log(e);
 		});
 	return Promise.resolve("https://w2g.tv/rooms/" + data.streamkey);
 }
@@ -25,7 +24,7 @@ async function getLatestVideo() {
 			maxResults: 1,
 			order: "date",
 			type: "video",
-			key: "AIzaSyDU7zyvRnYr3Z7-Ht8ue-SdyF_t66aNMKE",
+			key: process.env.YOUTUBE_KEY,
 		},
 		Headers: {},
 	});
