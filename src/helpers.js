@@ -51,4 +51,20 @@ function generateButton(url) {
 			.setURL(url)
 	);
 }
-module.exports = { readDB, writeDB, generateButton, generateEmbed, getKey };
+
+function generate32BitID() {
+	let str =
+		Math.random().toString(36).substring(2, 15) +
+		Math.random().toString(36).substring(2, 15);
+	base = new Buffer.from(str).toString("base64");
+	return base;
+}
+
+module.exports = {
+	readDB,
+	writeDB,
+	generateButton,
+	generateEmbed,
+	getKey,
+	generate32BitID,
+};

@@ -21,7 +21,7 @@ async function getLatestVideo() {
 		baseURL: "https://www.googleapis.com/youtube/v3/search",
 		params: {
 			part: "snippet",
-			channelId: "UC2zKTWCDV582rioecXKwxNQ", //"UCZzGtvgIcthK2cOGvwGGbbA",
+			channelId: "UCZzGtvgIcthK2cOGvwGGbbA",
 			maxResults: 1,
 			order: "date",
 			type: "video",
