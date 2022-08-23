@@ -1,4 +1,5 @@
 const axios = require("axios");
+const helpers = require("./helpers");
 require("dotenv");
 
 async function createW2GRoom(uri) {
@@ -20,14 +21,16 @@ async function getLatestVideo() {
 		baseURL: "https://www.googleapis.com/youtube/v3/search",
 		params: {
 			part: "snippet",
-			channelId: "UCZzGtvgIcthK2cOGvwGGbbA",
+			channelId: "UC2zKTWCDV582rioecXKwxNQ", //"UCZzGtvgIcthK2cOGvwGGbbA",
 			maxResults: 1,
 			order: "date",
 			type: "video",
+			publishedAfter: helpers.readDB().time,
 			key: process.env.YOUTUBE_KEY,
 		},
 		Headers: {},
 	});
+
 	const res = await req.request().catch(e => console.log(e));
 	return Promise.resolve(res.data.items[0]);
 }
