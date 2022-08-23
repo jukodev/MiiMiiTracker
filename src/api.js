@@ -26,12 +26,15 @@ async function getLatestVideo() {
 			order: "date",
 			type: "video",
 			publishedAfter: helpers.readDB().time,
-			key: process.env.YOUTUBE_KEY,
+			key: helpers.getKey(),
 		},
 		Headers: {},
 	});
 
-	const res = await req.request().catch(e => console.log(e));
-	return Promise.resolve(res.data.items[0]);
+	req.request()
+		.then(res => {
+			return Promise.resolve(res.data.items[0]);
+		})
+		.catch(e => console.log(e));
 }
 module.exports = { createW2GRoom, getLatestVideo };

@@ -5,6 +5,18 @@ const {
 	ButtonBuilder,
 	ButtonStyle,
 } = require("discord.js");
+require("dotenv");
+
+let currentKey = 0;
+let keys = process.env.YOUTUBE_KEYS.split(",");
+
+function getKey() {
+	let key = keys[currentKey];
+	if (currentKey < keys.length - 1) currentKey++;
+	else currentKey = 0;
+	return key;
+}
+
 function readDB() {
 	let raw = fs.readFileSync("./storage/db.json");
 	return JSON.parse(raw);
@@ -39,4 +51,4 @@ function generateButton(url) {
 			.setURL(url)
 	);
 }
-module.exports = { readDB, writeDB, generateButton, generateEmbed };
+module.exports = { readDB, writeDB, generateButton, generateEmbed, getKey };
