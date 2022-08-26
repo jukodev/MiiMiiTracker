@@ -7,7 +7,7 @@ const client = new Client({ intents: [] });
 let channel = "751751901338664995";
 
 client.on("ready", () => {
-	console.log("connected");
+	helpers.log("Successfully connected to discord");
 	client.channels.fetch(channel).then(ch => {
 		channel = ch;
 	});
@@ -16,7 +16,7 @@ client.on("ready", () => {
 setInterval(async () => {
 	let lastId = helpers.readDB().lastVideo;
 	api.getLatestVideo().then(res => {
-		console.log("success");
+		helpers.log("Request succeeded");
 
 		if (res?.id && lastId != res.id.videoId) {
 			api.createW2GRoom(

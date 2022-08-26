@@ -11,7 +11,7 @@ async function createW2GRoom(uri) {
 			bg_opacity: "85",
 		})
 		.catch(e => {
-			console.log(e);
+			helpers.log(e);
 		});
 	return Promise.resolve("https://w2g.tv/rooms/" + data.streamkey);
 }
@@ -35,6 +35,6 @@ async function getLatestVideo() {
 		.then(res => {
 			return Promise.resolve(res.data.items[0]);
 		})
-		.catch(e => console.log(e));
+		.catch(e => helpers.log(e));
 }
 module.exports = { createW2GRoom, getLatestVideo };

@@ -17,6 +17,11 @@ function getKey() {
 	return key;
 }
 
+function log(str) {
+	let date = new Date();
+	console.log("[" + date.toString().split(" GMT")[0] + "] " + str);
+}
+
 function readDB() {
 	let raw = fs.readFileSync("./storage/db.json");
 	return JSON.parse(raw);
@@ -67,4 +72,5 @@ module.exports = {
 	generateEmbed,
 	getKey,
 	generate32BitID,
+	log,
 };
