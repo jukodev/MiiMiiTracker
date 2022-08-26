@@ -15,9 +15,10 @@ client.on("ready", () => {
 
 setInterval(async () => {
 	let lastId = helpers.readDB().lastVideo;
-	api.getLatestVideo().then(res => {
+	api.req.request().then(res => {
+		res = res.data.items[0];
 		helpers.log("Request succeeded");
-
+		console.log(res);
 		if (res?.id && lastId != res.id.videoId) {
 			api.createW2GRoom(
 				`https://youtube.com/watch?v=${res.id.videoId}`
@@ -41,6 +42,9 @@ setInterval(async () => {
 			});
 		}
 	});
+	/*api.getLatestVideo().then(res => {
+		
+	});*/
 }, 3000);
 
 client.login(process.env.DISCORD_KEY);

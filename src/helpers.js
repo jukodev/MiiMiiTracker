@@ -14,7 +14,7 @@ function getKey() {
 	let key = keys[currentKey];
 	if (currentKey < keys.length - 1) currentKey++;
 	else currentKey = 0;
-	return key;
+	return process.env.YOUTUBE_KEY;
 }
 
 function log(str) {
