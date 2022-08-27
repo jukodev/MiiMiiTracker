@@ -25,7 +25,7 @@ client.on("ready", () => {
 
 setInterval(async () => {
 	getLatestVideo();
-}, proccess.env.DELAY);
+}, process.env.DELAY);
 
 client.on("interactionCreate", async interaction => {
 	if (!interaction.isChatInputCommand) return;
@@ -57,7 +57,7 @@ function getLatestVideo() {
 			let data = { url, name, thumbnail };
 			processVideo(data);
 		})
-		.catch(e => helpers.log(e));
+		.catch(e => console.log(e));
 }
 
 function processVideo(data) {
