@@ -2,20 +2,6 @@ const axios = require("axios");
 const helpers = require("./helpers");
 require("dotenv");
 
-const req = axios.create({
-	baseURL: "https://www.googleapis.com/youtube/v3/search",
-	params: {
-		part: "snippet",
-		channelId: "UCZzGtvgIcthK2cOGvwGGbbA",
-		maxResults: 1,
-		order: "date",
-		type: "video",
-		publishedAfter: helpers.readDB().time,
-		key: helpers.getKey(),
-	},
-	Headers: {},
-});
-
 async function createW2GRoom(uri) {
 	const { data } = await axios
 		.post("https://w2g.tv/rooms/create.json", {
@@ -30,12 +16,4 @@ async function createW2GRoom(uri) {
 	return Promise.resolve("https://w2g.tv/rooms/" + data.streamkey);
 }
 
-async function getLatestVideo() {
-	req.request()
-		.then(res => {
-			helpers.log("req");
-			return Promise.resolve(res.data.items[0]);
-		})
-		.catch(e => helpers.log(e));
-}
-module.exports = { createW2GRoom, getLatestVideo, req };
+module.exports = { createW2GRoom };

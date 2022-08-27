@@ -4,7 +4,8 @@ const { REST } = require("@discordjs/rest");
 const helpers = require("./helpers");
 const { Client, GatewayIntentBits } = require("discord.js");
 const api = require("./api");
-
+const fetch = (...args) =>
+	import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 let channel = process.env.DISCORD_CHANNEL;
 
@@ -23,37 +24,8 @@ client.on("ready", () => {
 });
 
 setInterval(async () => {
-	let lastId = helpers.readDB().lastVideo;
-	api.req.request().then(res => {
-		res = res.data.items[0];
-		helpers.log("Request succeeded");
-		if (res?.id && lastId != res.id.videoId) {
-			api.createW2GRoom(
-				`https://youtube.com/watch?v=${res.id.videoId}`
-			).then(w2g => {
-				channel.send({
-					embeds: [
-						helpers.generateEmbed(
-							`https://youtube.com/watch?v=${res.id.videoId}`,
-							res.snippet.title,
-							res.snippet.thumbnails.default.url
-						),
-					],
-					components: [helpers.generateButton(w2g)],
-				});
-
-				helpers.writeDB({
-					lastVideo: res.id.videoId,
-					lastRoom: w2g,
-					time: res.snippet.publishedAt,
-				});
-			});
-		}
-	});
-	/*api.getLatestVideo().then(res => {
-		
-	});*/
-}, 130000);
+	getLatestVideoV2();
+}, 2000);
 
 client.on("interactionCreate", async interaction => {
 	if (!interaction.isChatInputCommand) return;
@@ -64,3 +36,50 @@ client.on("interactionCreate", async interaction => {
 		});
 	}
 });
+
+function getLatestVideo() {
+	fetch("https://www.youtube.com/c/miimii/videos")
+		.then(res => res.text())
+		.then(html => {
+			let indice = html.indexOf(`WEB_PAGE_TYPE_WATCH`);
+			let short = html.substring(indice - 50, indice);
+			indice = short.indexOf("/watch");
+			let indice2 = short.indexOf(`","`);
+			let url = "https://youtube.com" + short.substring(indice, indice2);
+			indice = html.indexOf(`"runs":[{"text"`);
+			short = html.substring(indice + 17, indice + 200);
+			indice = short.indexOf(`"}]`);
+			let name = short.substring(0, indice);
+			indice = html.indexOf(`[{"url":`);
+			short = html.substring(indice + 9, indice + 300);
+			indice = short.indexOf(`","`);
+			let thumbnail = short.substring(0, indice);
+			let data = { url, name, thumbnail };
+			proccessVideo(data);
+		})
+		.catch(e => helpers.log(e));
+}
+
+function proccessVideo(data) {
+	let lastId = helpers.readDB().lastVideo;
+	helpers.log("Request succeeded");
+	if (data && lastId != data.url) {
+		api.createW2GRoom(data.url).then(w2g => {
+			channel.send({
+				embeds: [
+					helpers.generateEmbed(
+						`https://youtube.com/watch?v=${data.url}`,
+						data.name,
+						data.thumbnail
+					),
+				],
+				components: [helpers.generateButton(w2g)],
+			});
+
+			helpers.writeDB({
+				lastVideo: data.url,
+				lastRoom: w2g,
+			});
+		});
+	}
+}
