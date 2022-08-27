@@ -24,8 +24,8 @@ client.on("ready", () => {
 });
 
 setInterval(async () => {
-	getLatestVideoV2();
-}, 2000);
+	getLatestVideo();
+}, proccess.env.DELAY);
 
 client.on("interactionCreate", async interaction => {
 	if (!interaction.isChatInputCommand) return;
@@ -38,7 +38,7 @@ client.on("interactionCreate", async interaction => {
 });
 
 function getLatestVideo() {
-	fetch("https://www.youtube.com/c/miimii/videos")
+	fetch(process.env.YOUTUBE_CHANNEL)
 		.then(res => res.text())
 		.then(html => {
 			let indice = html.indexOf(`WEB_PAGE_TYPE_WATCH`);
@@ -55,12 +55,12 @@ function getLatestVideo() {
 			indice = short.indexOf(`","`);
 			let thumbnail = short.substring(0, indice);
 			let data = { url, name, thumbnail };
-			proccessVideo(data);
+			processVideo(data);
 		})
 		.catch(e => helpers.log(e));
 }
 
-function proccessVideo(data) {
+function processVideo(data) {
 	let lastId = helpers.readDB().lastVideo;
 	helpers.log("Request succeeded");
 	if (data && lastId != data.url) {
