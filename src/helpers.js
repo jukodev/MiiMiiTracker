@@ -93,7 +93,6 @@ module.exports = {
 	writeDB,
 	generateButton,
 	generateEmbed,
-	getKey,
 	generate32BitID,
 	log,
 	setCommands,
