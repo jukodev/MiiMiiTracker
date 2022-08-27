@@ -1,13 +1,22 @@
 require("dotenv").config();
+const { REST } = require("@discordjs/rest");
+
 const helpers = require("./helpers");
-const { Client } = require("discord.js");
+const { Client, GatewayIntentBits } = require("discord.js");
 const api = require("./api");
 
-const client = new Client({ intents: [] });
-let channel = "751751901338664995";
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+let channel = process.env.DISCORD_CHANNEL;
+
+main();
+
+function main() {
+	helpers.setCommands();
+	client.login(process.env.DISCORD_KEY);
+}
 
 client.on("ready", () => {
-	helpers.log("Successfully connected to discord");
+	helpers.log("Connected to discord as " + client.user.tag);
 	client.channels.fetch(channel).then(ch => {
 		channel = ch;
 	});
@@ -18,7 +27,6 @@ setInterval(async () => {
 	api.req.request().then(res => {
 		res = res.data.items[0];
 		helpers.log("Request succeeded");
-		console.log(res);
 		if (res?.id && lastId != res.id.videoId) {
 			api.createW2GRoom(
 				`https://youtube.com/watch?v=${res.id.videoId}`
@@ -45,6 +53,14 @@ setInterval(async () => {
 	/*api.getLatestVideo().then(res => {
 		
 	});*/
-}, 3000);
+}, 130000);
 
-client.login(process.env.DISCORD_KEY);
+client.on("interactionCreate", async interaction => {
+	if (!interaction.isChatInputCommand) return;
+	if (interaction.commandName === "watch") {
+		let url = interaction.options.get("url").value;
+		api.createW2GRoom(url).then(res => {
+			interaction.reply(res);
+		});
+	}
+});

@@ -1,20 +1,52 @@
 const fs = require("fs");
+const { REST } = require("@discordjs/rest");
+
 const {
 	EmbedBuilder,
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
+	Routes,
 } = require("discord.js");
 require("dotenv");
 
 let currentKey = 0;
 let keys = process.env.YOUTUBE_KEYS.split(",");
+const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_KEY);
 
 function getKey() {
 	let key = keys[currentKey];
 	if (currentKey < keys.length - 1) currentKey++;
 	else currentKey = 0;
-	return process.env.YOUTUBE_KEY;
+	return process.env.YOUTUBE_KEYS;
+}
+
+async function setCommands() {
+	const commands = [
+		{
+			name: "watch",
+			description: "creates W2G room",
+			options: [
+				{
+					name: "url",
+					description: "video to watch",
+					type: 3,
+					required: true,
+				},
+			],
+		},
+	];
+
+	await rest
+		.put(
+			Routes.applicationGuildCommands(
+				process.env.DISCORD_APPID,
+				process.env.GUILD_ID
+			),
+			{ body: commands }
+		)
+		.then(() => log("Registered commands"))
+		.catch(log);
 }
 
 function log(str) {
@@ -73,4 +105,5 @@ module.exports = {
 	getKey,
 	generate32BitID,
 	log,
+	setCommands,
 };
