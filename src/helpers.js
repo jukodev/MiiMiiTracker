@@ -10,16 +10,7 @@ const {
 } = require("discord.js");
 require("dotenv");
 
-let currentKey = 0;
-let keys = process.env.YOUTUBE_KEYS.split(",");
 const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_KEY);
-
-function getKey() {
-	let key = keys[currentKey];
-	if (currentKey < keys.length - 1) currentKey++;
-	else currentKey = 0;
-	return process.env.YOUTUBE_KEYS;
-}
 
 async function setCommands() {
 	const commands = [
