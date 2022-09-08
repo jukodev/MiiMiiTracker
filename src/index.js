@@ -63,7 +63,7 @@ function getLatestVideo() {
 function processVideo(data) {
 	let lastId = helpers.readDB().lastVideo;
 	helpers.log("Request succeeded");
-	if (data && lastId != data.url) {
+	if (data && lastId != data.url && !data.url.includes(".")) {
 		api.createW2GRoom(data.url).then(w2g => {
 			channel.send({
 				embeds: [
