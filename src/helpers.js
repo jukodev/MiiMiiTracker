@@ -56,8 +56,8 @@ function writeDB(data) {
 function generateEmbed(url, title, imageUrl) {
 	return new EmbedBuilder()
 		.setColor(0xfed962)
-		.setTitle(title)
-		.setURL(url)
+		.setTitle(title.length > 0 ? title : "error")
+		.setURL(url.length > 0 ? url : "error")
 		.setAuthor({
 			name: "Neuer MiiMii Banger",
 			iconURL:
