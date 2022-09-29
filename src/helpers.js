@@ -62,7 +62,7 @@ function generateEmbed(url, title, imageUrl) {
 			name: "Neuer MiiMii Banger",
 			iconURL:
 				"https://yt3.ggpht.com/ytc/AMLnZu9G_2Tt4d2Sf3xHoCEN_JW3eL4bDqD7OiTHnJGimA=s88-c-k-c0x00ffffff-no-rj",
-			url: "https://discord.js.org",
+			url: "https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Fi.redd.it%2F5w0mamdmiiw51.png&sp=1664462847T92ca9a67b9aff6782f28aa89d1a944ca17db71ea0aad0a1d55ba543fbc5a9ac7",
 		})
 		.setImage(imageUrl)
 		.setTimestamp()

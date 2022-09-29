@@ -61,31 +61,36 @@ function getLatestVideo() {
 }
 
 function processVideo(data) {
-	let lastId = helpers.readDB().lastVideo;
-	helpers.log("Request succeeded");
-	if (
-		data &&
-		data.name.length > 0 &&
-		data.url.length > 0 &&
-		data.thumbnail.length > 0 &&
-		lastId != data.url
-	) {
-		api.createW2GRoom(data.url).then(w2g => {
-			channel.send({
-				embeds: [
-					helpers.generateEmbed(
-						`https://youtube.com/watch?v=${data.url}`,
-						data.name,
-						data.thumbnail
-					),
-				],
-				components: [helpers.generateButton(w2g)],
-			});
+	try {
+		let lastId = helpers.readDB().lastVideo;
+		if (
+			data &&
+			data.name.length > 0 &&
+			data.url.length > 0 &&
+			data.thumbnail.length > 0 &&
+			lastId != data.url &&
+			data.url !== "https://youtube.com"
+		) {
+			api.createW2GRoom(data.url).then(w2g => {
+				channel.send({
+					embeds: [
+						helpers.generateEmbed(
+							data.url,
+							data.name,
+							data.thumbnail
+						),
+					],
+					components: [helpers.generateButton(w2g)],
+				});
 
-			helpers.writeDB({
-				lastVideo: data.url,
-				lastRoom: w2g,
+				helpers.writeDB({
+					lastVideo: data.url,
+					lastRoom: w2g,
+				});
+				helpers.log("Request succeeded");
 			});
-		});
+		}
+	} catch (error) {
+		helpers.log(error);
 	}
 }
