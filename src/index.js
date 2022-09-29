@@ -33,6 +33,7 @@ client.on("interactionCreate", async interaction => {
 		let url = interaction.options.get("url").value;
 		api.createW2GRoom(url).then(res => {
 			interaction.reply(res);
+			helpers.log("created w2g room for " + url);
 		});
 	}
 });
@@ -57,7 +58,7 @@ function getLatestVideo() {
 			let data = { url, name, thumbnail };
 			processVideo(data);
 		})
-		.catch(e => console.log(e));
+		.catch(e => helpers.log(e));
 }
 
 function processVideo(data) {
@@ -68,7 +69,7 @@ function processVideo(data) {
 			data.name.length > 0 &&
 			data.url.length > 0 &&
 			data.thumbnail.length > 0 &&
-			lastId != data.url &&
+			lastId !== data.url &&
 			data.url !== "https://youtube.com"
 		) {
 			api.createW2GRoom(data.url).then(w2g => {
@@ -87,7 +88,7 @@ function processVideo(data) {
 					lastVideo: data.url,
 					lastRoom: w2g,
 				});
-				helpers.log("Request succeeded");
+				helpers.log("sent new video: " + data.name);
 			});
 		}
 	} catch (error) {
