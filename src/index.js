@@ -64,13 +64,15 @@ function getLatestVideo() {
 function processVideo(data) {
 	try {
 		let lastId = helpers.readDB().lastVideo;
+		let allVids = helpers.readDB().allVideos;
 		if (
 			data &&
 			data.name.length > 0 &&
 			data.url.length > 0 &&
 			data.thumbnail.length > 0 &&
 			lastId !== data.url &&
-			data.url !== "https://youtube.com"
+			data.url !== "https://youtube.com" &&
+			!allVids.includes(data.url)
 		) {
 			api.createW2GRoom(data.url).then(w2g => {
 				channel.send({
@@ -83,10 +85,11 @@ function processVideo(data) {
 					],
 					components: [helpers.generateButton(w2g)],
 				});
-
+				allVids.push(data.url);
 				helpers.writeDB({
 					lastVideo: data.url,
 					lastRoom: w2g,
+					allVideos: allVids,
 				});
 				helpers.log("sent new video: " + data.name);
 			});
