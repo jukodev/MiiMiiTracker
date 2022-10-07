@@ -54,12 +54,15 @@ function getLatestVideo() {
 			indice = html.indexOf(`"thumbnailOverlayTimeStatusRenderer"`);
 			short = html.substring(indice + 93, indice + 200);
 			indice = short.indexOf(`"}`);
-			let lenght = short.substring(0, indice);
+			let duration = short.substring(0, indice);
+			duration = duration
+				.replace(" Minuten, ", ":")
+				.replace(" Sekunden", "");
 			indice = html.indexOf(`[{"url":`);
 			short = html.substring(indice + 9, indice + 300);
 			indice = short.indexOf(`","`);
 			let thumbnail = short.substring(0, indice);
-			let data = { url, name, thumbnail, lenght };
+			let data = { url, name, thumbnail, duration };
 			processVideo(data);
 		})
 		.catch(e => helpers.log(e));
@@ -74,11 +77,12 @@ function processVideo(data) {
 			data.name.length > 0 &&
 			data.url.length > 0 &&
 			data.thumbnail.length > 0 &&
-			data.lenght.lenght > 0 &&
+			data.duration.length > 0 &&
 			lastId !== data.url &&
 			data.url !== "https://youtube.com" &&
 			!allVids.includes(data.url)
 		) {
+			helpers.log("siuuuu");
 			api.createW2GRoom(data.url).then(w2g => {
 				channel.send({
 					embeds: [
@@ -86,7 +90,7 @@ function processVideo(data) {
 							data.url,
 							data.name,
 							data.thumbnail,
-							data.length
+							data.duration
 						),
 					],
 					components: [helpers.generateButton(w2g)],
