@@ -53,11 +53,12 @@ function writeDB(data) {
 	let temp = JSON.stringify(data);
 	fs.writeFileSync("./storage/db.json", temp);
 }
-function generateEmbed(url, title, imageUrl) {
+function generateEmbed(url, title, imageUrl, videoLength) {
 	return new EmbedBuilder()
 		.setColor(0xfed962)
 		.setTitle(title.length > 0 ? title : "error")
 		.setURL(url.length > 0 ? url : "error")
+		.setDescription(videoLength.length > 0 ? videoLength : "error")
 		.setAuthor({
 			name: "Neuer MiiMii Banger",
 			iconURL:
@@ -69,6 +70,17 @@ function generateEmbed(url, title, imageUrl) {
 		.setFooter({
 			text: "Huiuiuiui",
 		});
+}
+
+function GetSubstringIndex(str, substring, n) {
+    var times = 0, index = null;
+
+    while (times < n && index !== -1) {
+        index = str.indexOf(substring, index+1);
+        times++;
+    }
+
+    return index;
 }
 
 function generateButton(url) {

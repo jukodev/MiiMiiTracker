@@ -51,11 +51,15 @@ function getLatestVideo() {
 			short = html.substring(indice + 17, indice + 200);
 			indice = short.indexOf(`"}]`);
 			let name = short.substring(0, indice);
+			indice = html.indexOf(`"thumbnailOverlayTimeStatusRenderer"`);
+			short = html.substring(indice + 93, indice + 200);
+			indice = short.indexOf(`"}`);
+			let lenght = short.substring(0, indice);
 			indice = html.indexOf(`[{"url":`);
 			short = html.substring(indice + 9, indice + 300);
 			indice = short.indexOf(`","`);
 			let thumbnail = short.substring(0, indice);
-			let data = { url, name, thumbnail };
+			let data = { url, name, thumbnail, lenght };
 			processVideo(data);
 		})
 		.catch(e => helpers.log(e));
@@ -70,6 +74,7 @@ function processVideo(data) {
 			data.name.length > 0 &&
 			data.url.length > 0 &&
 			data.thumbnail.length > 0 &&
+			data.lenght.lenght > 0 &&
 			lastId !== data.url &&
 			data.url !== "https://youtube.com" &&
 			!allVids.includes(data.url)
@@ -80,7 +85,8 @@ function processVideo(data) {
 						helpers.generateEmbed(
 							data.url,
 							data.name,
-							data.thumbnail
+							data.thumbnail,
+							data.length
 						),
 					],
 					components: [helpers.generateButton(w2g)],
