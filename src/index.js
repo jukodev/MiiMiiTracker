@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { REST } = require("@discordjs/rest");
+const process = require("process");
 
 const helpers = require("./helpers");
 const { Client, GatewayIntentBits } = require("discord.js");
@@ -12,12 +13,18 @@ let channel = process.env.DISCORD_CHANNEL;
 main();
 
 function main() {
+	process.title = "MiiMiiTracker";
 	helpers.setCommands();
 	client.login(process.env.DISCORD_KEY);
 }
 
 client.on("ready", () => {
-	helpers.log("Connected to discord as " + client.user.tag);
+	helpers.log(
+		"Connected to discord as " +
+			client.user.tag +
+			", running as " +
+			process.title
+	);
 	client.channels.fetch(channel).then(ch => {
 		channel = ch;
 	});
@@ -58,6 +65,9 @@ function getLatestVideo() {
 			duration = duration
 				.replace(" Minuten, ", ":")
 				.replace(" Sekunden", "");
+			if (duration.split(":")[1].length < 2)
+				duration =
+					duration.split(":")[0] + ":0" + duration.split(":")[1];
 			indice = html.indexOf(`[{"url":`);
 			short = html.substring(indice + 9, indice + 300);
 			indice = short.indexOf(`","`);

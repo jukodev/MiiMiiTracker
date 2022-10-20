@@ -1,3 +1,3 @@
 #!/bin/sh
-pkill -f node
+pkill MiiMiiTracker
 echo "successfully stopped server"
