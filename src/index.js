@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 require("dotenv").config();
 const { REST } = require("@discordjs/rest");
 const process = require("process");
