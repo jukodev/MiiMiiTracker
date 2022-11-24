@@ -10,11 +10,10 @@ const api = require("./api");
 const fetch = (...args) =>
 	import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-let channel = process.env.DISCORD_CHANNEL;
-
-main();
+let channel;
 
 function main() {
+	channel = process.env.DISCORD_CHANNEL;
 	process.title = "MiiMiiTracker";
 	helpers.setCommands();
 	client.login(process.env.DISCORD_KEY);
@@ -46,6 +45,13 @@ client.on("interactionCreate", async interaction => {
 		});
 	}
 });
+
+function sendW2GFromUrl(url) {
+	api.createW2GRoom(url).then(res => {
+		channel.send(res);
+		helpers.log("created w2g room for " + url);
+	});
+}
 
 function getLatestVideo() {
 	fetch(process.env.YOUTUBE_CHANNEL)
@@ -120,3 +126,8 @@ function processVideo(data) {
 		helpers.log(error);
 	}
 }
+
+module.exports = {
+	main,
+	sendW2GFromUrl,
+};
