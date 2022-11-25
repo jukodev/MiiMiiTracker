@@ -15,7 +15,8 @@ let channel;
 function main() {
 	channel = process.env.DISCORD_CHANNEL;
 	process.title = "MiiMiiTracker";
-	helpers.setCommands();
+	//helpers.setCommands();
+
 	client.login(process.env.DISCORD_KEY);
 }
 
@@ -46,11 +47,8 @@ client.on("interactionCreate", async interaction => {
 	}
 });
 
-function sendW2GFromUrl(url) {
-	api.createW2GRoom(url).then(res => {
-		channel.send(res);
-		helpers.log("created w2g room for " + url);
-	});
+function sendMessageToServer(msg) {
+	channel.send(msg);
 }
 
 function getLatestVideo() {
@@ -129,5 +127,5 @@ function processVideo(data) {
 
 module.exports = {
 	main,
-	sendW2GFromUrl,
+	sendMessageToServer,
 };

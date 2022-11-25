@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const express = require("express");
-const path = require("path");
 const logger = require("morgan");
 const helmet = require("helmet");
 const cors = require("cors");
@@ -17,9 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
-	res.json({
-		message: "mii mii",
-	});
+	res.send("mii mii");
 });
 
 app.use("/rooms", rooms);
