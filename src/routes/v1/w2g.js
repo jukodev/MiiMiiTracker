@@ -1,15 +1,16 @@
 const { Router } = require("express");
-const rooms = Router();
+const w2g = Router();
 const index = require("../../index");
 const api = require("../../api");
 const helpers = require("../../helpers");
+const { requireAuth } = require("../../tools/middlewares");
 
-rooms.get("/", (req, res) => {
-	if (!req.query?.url) {
+w2g.post("/", requireAuth, (req, res) => {
+	if (!req.body?.url) {
 		const err = new Error();
 		err.message = 'Missing url parameter "url"';
 		err.name = "missing-parameter";
-		res.status(401).json(err);
+		res.status(402).json(err);
 	} else {
 		api.createW2GRoom(req.query.url)
 			.then(w2g => {
@@ -23,8 +24,4 @@ rooms.get("/", (req, res) => {
 	}
 });
 
-rooms.get("/arg", (req, res) => {
-	res.status(201).json({ msg: "arg" });
-});
-
-module.exports = rooms;
+module.exports = w2g;
