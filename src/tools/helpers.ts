@@ -14,7 +14,7 @@ require('dotenv');
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_KEY);
 
-async function setCommands() {
+async function setCommands(): Promise<void> {
   const commands = [
     {
       name: 'watch',
@@ -42,17 +42,18 @@ async function setCommands() {
     .catch(log);
 }
 
-function log(str: string) {
-  let date = new Date();
-  console.log('[' + date.toString().split(' GMT')[0] + '] ' + str);
+function log(str: string): void {
+  // const date = new Date();
+  // console.log('[' + date.toString().split(' GMT')[0] + '] ' + str);
+  console.log(str);
 }
 
-function readDB() {
-  let raw = fs.readFileSync('./storage/db.json');
+function readDB(): dbScheme {
+  const raw = fs.readFileSync('./storage/db.json');
   return JSON.parse(raw);
 }
-function writeDB(data: dbScheme) {
-  let temp = JSON.stringify(data);
+function writeDB(data: dbScheme): void {
+  const temp = JSON.stringify(data);
   fs.writeFileSync('./storage/db.json', temp);
 }
 function generateEmbed(
@@ -60,7 +61,7 @@ function generateEmbed(
   title: string,
   imageUrl: string,
   videoLength: string
-) {
+): void {
   return new EmbedBuilder()
     .setColor(0xfed962)
     .setTitle(title.length > 0 ? title : 'error')
@@ -75,11 +76,11 @@ function generateEmbed(
     .setTimestamp()
 
     .setFooter({
-      text: videoLength ? videoLength : 'error'
+      text: videoLength.length > 0 ? videoLength : 'error'
     });
 }
 
-function generateButton(url: string) {
+function generateButton(url: string): any {
   return new ActionRowBuilder().addComponents(
     new ButtonBuilder()
       .setStyle(ButtonStyle.Link)
@@ -88,11 +89,11 @@ function generateButton(url: string) {
   );
 }
 
-type dbScheme = {
+interface dbScheme {
   lastVideo: string;
   lastRoom: string;
   allVideos: string[];
-};
+}
 
 module.exports = {
   readDB,

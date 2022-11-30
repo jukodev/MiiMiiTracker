@@ -1,24 +1,24 @@
-export {};
-import { responseEncoding } from 'axios';
 import { Request, Response, NextFunction } from 'express';
+export {};
 const fs = require('fs');
 const bcrypt = require('bcrypt');
+const path = require('path');
 
-const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+const requireAuth = (req: Request, res: Response, next: NextFunction): void => {
   const auth = req.header('Authorization');
 
   const type = auth?.split(' ')[0];
   const credentials = auth?.split(' ')[1];
-  if (type !== 'Bearer' || !credentials) {
-    let error = new Error();
+  if (type !== 'Bearer' || credentials === undefined) {
+    const error = new Error();
     error.message = 'Missing token';
     error.name = 'auth.unauthorized';
     res.status(401).json(error);
   } else if (
     bcrypt.compareSync(
       credentials,
-      fs.readFileSync(__dirname + '/../../storage/token').toString()
-    )
+      fs.readFileSync(path.join(__dirname, '/../../storage/token')).toString()
+    ) === true
   ) {
     next();
   } else {

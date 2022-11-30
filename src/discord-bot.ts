@@ -3,93 +3,98 @@
 import { Channel } from 'discord.js';
 
 export {};
-
 require('dotenv').config();
-const { REST } = require('@discordjs/rest');
 const process = require('process');
-
-const helpers = require('./helpers');
+const helpers = require('./tools/helpers');
 const { Client, GatewayIntentBits } = require('discord.js');
-const api = require('./api');
+const api = require('./tools/api');
 const axios = require('axios');
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-let channel: any; //TODO: find correct Channel type
 
-function main() {
+let channel: any; // ODO: find correct Channel type
+
+function init(): void {
   process.title = 'MiiMiiTracker';
-  //helpers.setCommands();
+  // helpers.setCommands();
 
   client.login(process.env.DISCORD_KEY);
 }
 
 client.on('ready', () => {
   helpers.log(
-    'Connected to discord as ' +
-      client.user.tag +
-      ', running as ' +
-      process.title
+    `Connected to discord as ${client.user.tag}, running as ${process.title}`
   );
   client.channels.fetch(process.env.DISCORD_CHANNEL).then((ch: Channel) => {
     channel = ch;
   });
 });
 
-setInterval(async () => {
+setInterval(() => {
   getLatestVideo();
 }, process.env.DELAY);
 
-client.on('interactionCreate', async (interaction: any) => {
+client.on('interactionCreate', async (interaction: Interaction) => {
   if (!interaction.isChatInputCommand) return;
   if (interaction.commandName === 'watch') {
-    let url = interaction.options.get('url').value;
+    const url = interaction.options.get('url').value;
     api.createW2GRoom(url).then((res: string) => {
       interaction.reply(res);
-      helpers.log('created w2g room for ' + url);
+      helpers.log(`created w2g room for ${url}`);
     });
   }
 });
 
-function sendMessageToServer(msg: string) {
+interface Interaction {
+  isChatInputCommand: boolean;
+  commandName: string;
+  options: {
+    get: any;
+  };
+  reply: any;
+}
+
+function sendMessageToServer(msg: string): void {
   channel.send(msg);
 }
 
-function getLatestVideo() {
+function getLatestVideo(): void {
   axios
     .get(process.env.YOUTUBE_CHANNEL)
     .then((res: any) => {
-      let html: string = res.data;
-      let indice = html.indexOf(`WEB_PAGE_TYPE_WATCH`);
+      const html: string = res.data;
+      let indice = html.indexOf('WEB_PAGE_TYPE_WATCH');
       let short = html.substring(indice - 50, indice);
       indice = short.indexOf('/watch');
-      let indice2 = short.indexOf(`","`);
-      let url = 'https://youtube.com' + short.substring(indice, indice2);
-      indice = html.indexOf(`"runs":[{"text"`);
+      const indice2 = short.indexOf('","');
+      const url = 'https://youtube.com' + short.substring(indice, indice2);
+      indice = html.indexOf('"runs":[{"text"');
       short = html.substring(indice + 17, indice + 200);
-      indice = short.indexOf(`"}]`);
-      let name = short.substring(0, indice);
-      indice = html.indexOf(`"thumbnailOverlayTimeStatusRenderer"`);
+      indice = short.indexOf('"}]');
+      const name = short.substring(0, indice);
+      indice = html.indexOf('"thumbnailOverlayTimeStatusRenderer"');
       short = html.substring(indice + 93, indice + 200);
-      indice = short.indexOf(`"}`);
+      indice = short.indexOf('"}');
       let duration = short.substring(0, indice);
       duration = duration.replace(' Minuten, ', ':').replace(' Sekunden', '');
-      if (duration.split(':')[1].length < 2)
+      if (duration.split(':')[1].length < 2) {
         duration = duration.split(':')[0] + ':0' + duration.split(':')[1];
-      indice = html.indexOf(`[{"url":`);
+      }
+      indice = html.indexOf('[{"url":');
       short = html.substring(indice + 9, indice + 300);
-      indice = short.indexOf(`","`);
-      let thumbnail = short.substring(0, indice);
-      let data: videoData = { url, name, thumbnail, duration };
+      indice = short.indexOf('","');
+      const thumbnail = short.substring(0, indice);
+      const data: videoData = { url, name, thumbnail, duration };
       processVideo(data);
     })
     .catch((e: Error) => console.log(e));
 }
 
-function processVideo(data: videoData) {
+function processVideo(data: videoData): void {
   try {
-    let lastId = helpers.readDB().lastVideo;
-    let allVids = helpers.readDB().allVideos;
+    const lastId = helpers.readDB().lastVideo;
+    const allVids: string[] = helpers.readDB().allVideos;
     if (
-      data &&
+      data !== null &&
       data.name.length > 0 &&
       data.url.length > 0 &&
       data.thumbnail.length > 0 &&
@@ -125,14 +130,14 @@ function processVideo(data: videoData) {
   }
 }
 
-type videoData = {
+interface videoData {
   url: string;
   name: string;
   thumbnail: string;
   duration: string;
-};
+}
 
 module.exports = {
-  main,
+  init,
   sendMessageToServer
 };

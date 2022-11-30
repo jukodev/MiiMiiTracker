@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
 import { Request, Response } from 'express';
+require('dotenv').config();
 const express = require('express');
 const logger = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
-const helpers = require('./helpers');
+const helpers = require('./tools/helpers');
 const w2g = require('./routes/v1/w2g');
-const index = require('./index');
+const discordBot = require('./discord-bot');
 const app = express();
 
 app.use(cors({ origin: '*' }));
@@ -22,7 +23,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/w2g', w2g);
 
-app.listen(process.env.PORT || 4000, () => {
-  helpers.log('server is running');
-  index.main();
+app.listen(process.env.PORT ?? 4000, () => {
+  helpers.log(`express server is running on port ${process.env.PORT ?? 4000}`);
+  discordBot.init();
 });
