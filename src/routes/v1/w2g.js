@@ -12,9 +12,9 @@ w2g.post("/", requireAuth, (req, res) => {
 		err.name = "missing-parameter";
 		res.status(402).json(err);
 	} else {
-		api.createW2GRoom(req.query.url)
+		api.createW2GRoom(req.body.url)
 			.then(w2g => {
-				//index.sendMessageToServer(w2g);
+				index.sendMessageToServer(w2g);
 				helpers.log("created w2g room for " + w2g + " from extension");
 				res.status(200).json({ data: { url: w2g } });
 			})
