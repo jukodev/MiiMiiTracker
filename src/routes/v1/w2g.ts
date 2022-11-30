@@ -18,7 +18,7 @@ w2g.post('/', requireAuth, (req: Request, res: Response) => {
     api
       .createW2GRoom(req.body.url)
       .then((w2g: string) => {
-        discordBot.sendMessageToServer(w2g);
+        discordBot.sendMessageToServer(`Der Bra ${req.body.name} forderte ${w2g} an`);
         helpers.log('created w2g room for ' + w2g + ' from extension');
         res.status(200).json({ data: { url: w2g } });
       })
