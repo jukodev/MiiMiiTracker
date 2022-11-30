@@ -15,7 +15,7 @@ async function createW2GRoom(uri: string): Promise<string> {
     .catch((e: Error) => {
       helpers.log(e);
     });
-  return await Promise.resolve(`https://w2g.tv/rooms/ ${data.streamkey}`);
+  return await Promise.resolve(`https://w2g.tv/rooms/${data.streamkey}`);
 }
 
 module.exports = { createW2GRoom };

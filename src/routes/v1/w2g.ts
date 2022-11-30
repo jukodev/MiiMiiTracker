@@ -9,7 +9,7 @@ const helpers = require('../../tools/helpers');
 const { requireAuth } = require('../../tools/middlewares');
 
 w2g.post('/', requireAuth, (req: Request, res: Response) => {
-  if (req.body?.url !== undefined) {
+  if (req.body?.url === undefined) {
     const err = new Error();
     err.message = 'Missing url parameter "url"';
     err.name = 'missing-parameter';
